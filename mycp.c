@@ -13,12 +13,12 @@ int main(int argc, char *argv[])
   FILE *src_fp, *dst_fp;
   char buf[BUF_SIZE];
   char answer[MAX_LEN];
-  
+
   if (argc != 3) {
     printf(USAGE);
-    return 1;
+    exit(1);
   }
-  
+
   src_filepath = argv[1];
   dst_filepath = argv[2];
 
@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
       exit(1);
     }
   } else {
-    // ファイルが既に存在していた → 上書きの確認
     while(1) {
       printf("%sは既に存在します。上書きしますか？（y/n）\n", dst_filepath);
       scanf("%255s", answer);
@@ -57,10 +56,12 @@ int main(int argc, char *argv[])
     if (size) {
       if (fwrite(buf, sizeof(char), size, dst_fp) < size) {
         perror("fwrite");
+        exit(1);
       }
     } else {
       if (ferror(src_fp)) {
         perror("ferror");
+        exit(1);
       } else if (feof(src_fp)) {
         break;
       }
